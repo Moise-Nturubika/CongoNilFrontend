@@ -88,18 +88,18 @@ class Sidebar extends Component {
               <span className="menu-title"><Trans>Fournisseur</Trans></span>
             </Link>
           </li>
-          <li className={ this.isPathActive('/tables/basic-table') ? 'nav-item active' : 'nav-item' }>
-            <Link className="nav-link" to="/tables/basic-table">
+          <li className={ this.isPathActive('/approvissionnement') ? 'nav-item active' : 'nav-item' }>
+            <Link className="nav-link" to="/approvissionnement">
               <i className="mdi mdi-television menu-icon"></i>
-              <span className="menu-title"><Trans>Utilisateur</Trans></span>
+              <span className="menu-title"><Trans>Approvisionnement</Trans></span>
             </Link>
           </li>
-          <li className={ this.isPathActive('/form-elements/basic-elements') ? 'nav-item active' : 'nav-item' }>
+          {/* <li className={ this.isPathActive('/form-elements/basic-elements') ? 'nav-item active' : 'nav-item' }>
             <Link className="nav-link" to="/form-Elements/basic-elements">
               <i className="mdi mdi-television menu-icon"></i>
               <span className="menu-title"><Trans>Utilisateur</Trans></span>
             </Link>
-          </li>
+          </li> */}
         </ul>
       </nav>
     );

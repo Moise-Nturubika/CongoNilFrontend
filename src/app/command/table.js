@@ -5,11 +5,11 @@ import Edit from '@material-ui/icons/Edit';
 import axiosInstance from '../../axios';
 
 
-class TableClientPrint extends React.Component {
+class TableCmdPrint extends React.Component {
   constructor(props) {
       super(props);
       this.state = {
-        clients: props.clients,
+        clients: props.commands,
         isLoading: false,
         isPrint: props.isPrint,
       };
@@ -18,29 +18,30 @@ class TableClientPrint extends React.Component {
       console.log(props);
     }
 
-    async handleDeleteClient(id) {
-        this.setState({isLoading: true});
-        await axiosInstance.post('/client/delete', {
-          id
-        }).then((response) => {
-          if(response.data.status) {
-            console.log(response.data.message)
-            axiosInstance.get('/client/show/all')
-                .then((response) => {
-                    if (response.status === 200) {
-                        const clients = response.data;
-                        this.setState({ clients, isLoading: false });
-                    }
-                });
-          } else {
-            console.log(response.data.message)
-          }
-        });
-        this.setState({ isLoading: false });
-      }
-
+    async handleDeleteCmd(id) {
+      this.setState({isLoading: true});
+      await axiosInstance.post('/command/delete', {
+        id
+      }).then((response) => {
+        if(response.data.status) {
+          console.log(response.data.message)
+          axiosInstance.get('/command/show/all')
+            .then((response) => {
+              if (response.status === 200) {
+                const commands = response.data;
+                this.setState({ commands, isLoading: false });
+              }
+            }
+          );
+        } else {
+          console.log(response.data.message)
+        }
+      });
+      this.setState({ isLoading: false });
+    }
+    
     render() {
-      const { clients, isPrint, isLoading } = this.state;
+      const { commands, isPrint, isLoading } = this.state;
 
       if (isLoading) {
         return (

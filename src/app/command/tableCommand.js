@@ -6,8 +6,8 @@ import axiosInstance from '../../axios';
 import TableClientPrint from './table';
 import ReactToPrint from 'react-to-print';
 
-export const TableClient = React.forwardRef((props, ref) => {
-    const [clients, setClients] = useState(props.clients);
+export const TableCommand = React.forwardRef((props, ref) => {
+    const [commands, setCommands] = useState(props.commands);
     const [isLoading, setLoading] = useState(false);
     const [isPrint, setIsPrint] = useState(false);
 
@@ -29,7 +29,7 @@ export const TableClient = React.forwardRef((props, ref) => {
         </div> :
         <div className="col-lg-12 grid-margin stretch-card">
             <div className="card">
-                <TableClientPrint clients={clients} ref={componentRef} isPrint={isPrint}/>
+                <TableClientPrint commands={commands} ref={componentRef} isPrint={isPrint}/>
                 <ReactToPrint
                   trigger={() => <button className="btn btn-primary btn-rounded">Imprimer</button>}
                   content={() => {

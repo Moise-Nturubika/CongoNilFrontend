@@ -7,7 +7,7 @@ import Sidebar from './shared/Sidebar';
 import SettingsPanel from './shared/SettingsPanel';
 import Footer from './shared/Footer';
 import { withTranslation } from "react-i18next";
-import ExportPdfComponent from "./command/printPDF";
+// import ExportPdfComponent from "./command/printPDF";
 
 class App extends Component {
   state = {}

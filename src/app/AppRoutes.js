@@ -27,8 +27,9 @@ const ClientScreen = lazy(() => import('./client/Client'));
 const ProductScreen = lazy(() => import('./produit/Produit'));
 const FournisseurScreen = lazy(() => import('./fournisseur/Fournisseur'));
 const CommandScreen = lazy(() => import('./command/Command'));
+const Approvis = lazy(() => import('./tables/approvisionnement'));
 
-const PDFScreen = lazy(() => import('./command/something'));
+// const PDFScreen = lazy(() => import('./command/something'));
 
 
 class AppRoutes extends Component {
@@ -60,7 +61,8 @@ class AppRoutes extends Component {
           <Route path="/product" component={ ProductScreen } />
           <Route path="/fournisseur" component={ FournisseurScreen } />
           <Route path="/command" component={ CommandScreen } />
-          <Route path="/pdf" component={ PDFScreen } />
+          <Route path="/approvissionnement" component={ Approvis } />
+          {/* <Route path="/pdf" component={ PDFScreen } /> */}
 
           <Redirect to="/dashboard" />
         </Switch>

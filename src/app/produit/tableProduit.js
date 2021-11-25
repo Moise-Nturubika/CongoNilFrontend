@@ -28,7 +28,7 @@ export const TableProduit = React.forwardRef((props, ref) => {
         <div className="card">
           <TableProd prod={products} ref={componentRef} />
           <ReactToPrint
-            trigger={() => <button>Print this out!</button>}
+            trigger={() => <button className="btn btn-primary btn-rounded">Imprimer</button>}
             content={() => componentRef.current}
           />
         </div>
