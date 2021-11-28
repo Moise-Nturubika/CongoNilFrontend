@@ -2,11 +2,15 @@ import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
 import { Dropdown, } from 'react-bootstrap';
 import Delete from '@material-ui/icons/Delete';
+import Print from '@material-ui/icons/Print';
 import axiosInstance from '../../axios';
 import { Button, CircularProgress, Typography } from '@material-ui/core';
 import { Page, Text, View, Document, StyleSheet, Font } from '@react-pdf/renderer';
 import ReactPDF from '@react-pdf/renderer';
 import ReactToPrint from 'react-to-print';
+import jsPDF from 'jspdf';
+import logo from './logo.jpg';
+import 'jspdf-autotable';
 // import { TableCommand } from './tableCommande';
 
 export class CommandScreen extends Component {
@@ -67,6 +71,40 @@ export class CommandScreen extends Component {
     this.setState({ adresse: event.target.value });
   }
 
+  handlepdfGenerate() {
+    console.log("===> INTO THE PRINT FUNCTION ======");
+    var doc = new jsPDF('portrait', 'px', 'A4', 'false');
+    doc.addImage(logo, 'JPG', 45, 35, 80, 80);
+    doc.setFontSize(18)
+    doc.text(340, 50, 'FACTURE');
+    doc.setFontSize(11);
+    doc.text(35, 130, 'Nord-Kivu, Goma, Q. Des Volcans');
+    doc.text(35,140, 'Av. Lumumba, Numero 234');
+    doc.text(35,150, '+243 975 236 270');
+    // doc.text(260, 180, cmd.client.nom + ' ' + cmd.client.prenom);
+    doc.text(260, 180, 'Machin');
+    doc.text(260, 190, 'Q. Himbi, Av. De Goma, Numero 265');
+    doc.text(260, 200, '+243 975 236 270');
+    doc.text(35, 210, 'RefFacture: 90008756');
+    doc.text(35, 220, 'Date : 2021-01-12');
+    doc.text(35, 230, 'IdClient: 2932');
+    doc.autoTable({
+      head: [['Produit', 'Prix unitaire($)', 'Quantité', 'Total']],
+      body: [
+        ['Jibu', '5', '3' , '15'],
+        ['Maji Safi', '7', '5' , '35'],
+        ['Premidis farine', '24', '3' , '72'],
+        ['Maji Safi', '7', '5' , '35'],
+      ],
+      startY: 250,
+    });
+    doc.setFontSize(16);
+    doc.text(320, 390, 'Total : ');
+    doc.text(360, 390, ' 45 $');
+    // doc.text(10, 10, 'Salut les conards');
+    doc.save('a.pdf');
+  }
+
   handleAddToBasket() {
     const { productSelected, montantTotal, qte } = this.state;
     if(productSelected != null || montantTotal != 0 || qte != 0){
@@ -84,6 +122,10 @@ export class CommandScreen extends Component {
     }
   }
 
+  handleDoSomething() {
+    console.log("function do something");
+  }
+
   handleRemoveFromBasket(e) {
     var array = [...this.state.panier]; // make a separate copy of the array
     var index = array.indexOf(e)
@@ -98,6 +140,47 @@ export class CommandScreen extends Component {
     // ReactPDF.render(<Quixote />, `${__dirname}/example.pdf`);
     // ReactPDF.render(<PDFView />, `${__dirname}/example.pdf`);
     // console.log(this.state.panier)
+  }
+
+  async handlePrintPDF(cmd) {
+    console.log("===> INTO THE PRINT FUNCTION ======");
+    var doc = new jsPDF('portrait', 'px', 'A4', 'false');
+    doc.addImage(logo, 'JPG', 45, 35, 80, 80);
+    doc.setFontSize(18)
+    doc.text(340, 50, 'FACTURE');
+    doc.setFontSize(11);
+    doc.text(35, 130, 'Nord-Kivu, Goma, Q. Des Volcans');
+    doc.text(35,140, 'Av. Lumumba, Numero 234');
+    doc.text(35,150, '+243 975 236 270');
+    doc.text(260, 180, cmd.client.nom + ' ' + cmd.client.prenom);
+    // doc.text(260, 180, 'Machin');
+    doc.text(260, 190, cmd.livraison);
+    doc.text(260, 200, cmd.client.telephone);
+    doc.text(35, 210, 'RefFacture: ' + cmd.id);
+    doc.text(35, 220, 'Date : ' + cmd.dateCommande);
+    doc.text(35, 230, 'IdClient: ' + cmd.client.id);
+    doc.autoTable({
+      head: [['Produit', 'Prix unitaire($)', 'Quantité', 'Total']],
+      body: 
+        cmd.details.map((dtl)=> (
+          [
+            dtl.produit.designation,
+            dtl.qte,
+            dtl.produit.prix,
+            dtl.montant
+          ]
+        )),
+        // ['Jibu', '5', '3' , '15'],
+        // ['Maji Safi', '7', '5' , '35'],
+        // ['Premidis farine', '24', '3' , '72'],
+        // ['Maji Safi', '7', '5' , '35'],
+      startY: 250,
+    });
+    doc.setFontSize(16);
+    doc.text(320, 390, 'Total : ');
+    doc.text(360, 390, cmd.total + '  $');
+    // doc.text(10, 10, 'Salut les conards');
+    doc.save(cmd.client.nom + cmd.id +'.pdf');
   }
 
   async handleLoadClient() {
@@ -373,7 +456,7 @@ export class CommandScreen extends Component {
                     />
                   </Form.Group>
                   <button type="button" className="btn btn-primary mr-2" onClick={this.handleAddToBasket.bind(this)}>Ajouter au panier</button>
-                  {/* <button type="button" className="btn btn-primary mr-2" onClick={this.handleRefresh.bind(this)}>Print</button> */}
+                  {/* <button type="button" className="btn btn-primary mr-2" onClick={this.handlepdfGenerate}>Download</button> */}
                   {/* <button className="btn btn-light">Cancel</button> */}
                   {/* <TableComponent ref={(response) => (this.componentRef = response)} /> */}
                   {/* <ReactToPrint
@@ -467,6 +550,9 @@ export class CommandScreen extends Component {
                     <td> {cmd.countProduit} </td>
                     <td> {cmd.total} $ </td>
                     <td>
+                      <Button color="primary" onClick={() => this.handlePrintPDF(cmd)}>
+                        <Print />
+                      </Button>
                       <Button style={{ color: 'red' }} onClick={() => this.handleDeleteCommand(cmd.id)}>
                         <Delete />
                       </Button>
