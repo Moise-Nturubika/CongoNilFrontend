@@ -143,7 +143,51 @@ export class FournisseurScreen extends Component {
                   <p className="card-description">  </p> 
                   <p className="card-description">  </p> 
                   <p className="card-description">  </p>
-                  <TableFournisseur fss={fournisseurs} />
+                  <div className="col-lg-12 grid-margin stretch-card">
+                    <div className="card">
+                    <div className="card-body">
+                      <div className="table-responsive">
+                        <table className="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th> # </th>
+                              <th> Nom </th>
+                              <th> Téléphone </th>
+                              <th> Secteur </th>
+                              <th> Adresse mail </th>
+                              <th> Action </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {fournisseurs.map((fss) => (
+                              <tr>
+                                <td> {fss.id} </td>
+                                <td> {fss.nom} </td>
+                                <td> {fss.telephone} </td>
+                                <td> {fss.secteur} </td>
+                                <td> {fss.mail} </td>
+                                <td>
+                                  {/* <Button color="primary">
+                                    <Edit />
+                                  </Button> */}
+                                  <Button style={{ color: 'red' }}>
+                                    <Delete />
+                                  </Button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                      {/* <TableFss fournisseurs={fournisseurs} ref={componentRef}/> */}
+                      {/* <ReactToPrint
+                        trigger={() => <button>Print this out!</button>}
+                        content={() => componentRef.current}
+                      /> */}
+                    </div>
+                  </div>
+                  {/* <TableFournisseur fss={fournisseurs} /> */}
                 </form>
               </div>
             </div>

@@ -11,6 +11,7 @@ export class ApprovScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      approvs: [],
       fournisseurs: [],
       fssDrop: "Select a fournissor",
       fssSelected: null,
@@ -27,6 +28,7 @@ export class ApprovScreen extends Component {
   componentDidMount() {
     this.handleLoadFss();
     this.handleLoadProduct();
+    this.handleLoadApprov();
   }
 
   handleChangeProduct(prod) {
@@ -73,7 +75,7 @@ export class ApprovScreen extends Component {
       console.log(response);
       if (response.data.status) {
         console.log('Successfully saved');
-        this.handleLoadFss();
+        this.handleLoadApprov();
       } else {
         console.log('Not saved');
       }
@@ -103,8 +105,30 @@ export class ApprovScreen extends Component {
     }
   }
 
+  async handleLoadApprov() {
+    try {
+      this.setState({ isLoading: true });
+      const res = await axiosInstance.get('/approv/show/all')
+        .then((response) => response);
+      if (res.status === 200) {
+        const approvs = res.data;
+        this.setState({ approvs, isLoading: false });
+      } else {
+        this.setState({ isError: true, isLoading: false });
+      }
+    } catch (err) {
+      console.log('Error =============> ' + err)
+      if (err.message.indexOf('401') !== -1) {
+        // window.location = '/Login';
+        console.log('404 error occured');
+      } else {
+        this.setState({ isError: true, isLoading: false });
+      }
+    }
+  }
+
   render() {
-    const { products, produitDrop, fournisseurs, fssDrop } = this.state;
+    const { approvs, products, produitDrop, fournisseurs, fssDrop } = this.state;
 
     return (
       <div>
@@ -177,6 +201,46 @@ export class ApprovScreen extends Component {
                   <p className="card-description">  </p> 
                   <p className="card-description">  </p> 
                   <p className="card-description">  </p>
+                  <div className="col-lg-12 grid-margin stretch-card">
+                  <div className="card">
+                    <div className="card-body">
+                      <h4 className="card-title">Approvisionnement list</h4>
+                      <div className="table-responsive">
+                        <table className="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th> # </th>
+                              <th> Fournisseur </th>
+                              <th> Date Approv. </th>
+                              <th> Produit </th>
+                              <th> Quantite </th>
+                              <th> Action </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {approvs.map((app) => (
+                              <tr>
+                                <td> {app.id} </td>
+                                  <td> {app.fournisseur.nom} </td>
+                                <td>
+                                  {app.dateApprov}
+                                </td>
+                                <td> {app.produit.designation} </td>
+                                <td> {app.quantite} </td>
+                                <td>
+                                  <Button style={{ color: 'red' }}>
+                                    <Delete />
+                                  </Button>
+                                </td>
+                              </tr>
+                            ))
+                            }
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    </div>
+                    </div>
                   {/* <TableFournisseur fss={fournisseurs} /> */}
                 </form>
               </div>

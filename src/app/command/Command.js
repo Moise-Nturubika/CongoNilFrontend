@@ -3,6 +3,7 @@ import { Form } from 'react-bootstrap';
 import { Dropdown, } from 'react-bootstrap';
 import Delete from '@material-ui/icons/Delete';
 import Print from '@material-ui/icons/Print';
+import ReceiptIcon from '@material-ui/icons/Receipt';
 import axiosInstance from '../../axios';
 import { Button, CircularProgress, Typography } from '@material-ui/core';
 import { Page, Text, View, Document, StyleSheet, Font } from '@react-pdf/renderer';
@@ -273,14 +274,52 @@ export class CommandScreen extends Component {
           montantTotal: 0,
           qte: 0
         });
+        
         this.handleLoadCommand();
-        // setTimeout(() => {
-        //   infoNotification('Command saved succefully');
-        // }, 1000);
+
       } else {
         console.log('Not saved');
       }
     });
+  }
+
+  async handleGetRecu(cmd) {
+    var doc = new jsPDF('portrait', 'px', 'A4', 'false');
+    doc.addImage(logo, 'JPG', 45, 35, 80, 80);
+    doc.setFontSize(18)
+    doc.text(340, 90, 'RECU');
+    doc.setFontSize(11);
+    doc.text(35, 130, 'Nord-Kivu, Goma, Q. Des Volcans');
+    doc.text(35,140, 'Av. Lumumba, Numero 234');
+    doc.text(35,150, '+243 975 236 270');
+    doc.text(260, 180, cmd.client.nom + ' ' + cmd.client.prenom);
+    // doc.text(260, 180, 'Machin');
+    doc.text(260, 190, cmd.livraison);
+    doc.text(260, 200, cmd.client.telephone);
+    doc.text(35, 210, 'Recu ID: ' + cmd.id);
+    doc.text(35, 220, 'Date : ' + cmd.dateCommande);
+    doc.autoTable({
+      head: [['Produit', 'Prix unitaire($)', 'Quantité', 'Total']],
+      body: 
+        cmd.details.map((dtl)=> (
+          [
+            dtl.produit.designation,
+            dtl.qte,
+            dtl.produit.prix,
+            dtl.montant
+          ]
+        )),
+        // ['Jibu', '5', '3' , '15'],
+        // ['Maji Safi', '7', '5' , '35'],
+        // ['Premidis farine', '24', '3' , '72'],
+        // ['Maji Safi', '7', '5' , '35'],
+      startY: 250,
+    });
+    doc.setFontSize(16);
+    doc.text(320, 390, 'Total : ');
+    doc.text(360, 390, cmd.total + '  $');
+    // doc.text(10, 10, 'Salut les conards');
+    doc.save(cmd.client.nom + cmd.id +'.pdf');
   }
 
   async handleDeleteCommand(id) {
@@ -515,8 +554,9 @@ export class CommandScreen extends Component {
                       >
                         Enregistrer la commande
                       </button> :
-                      <p></p>
+                      <p> </p>
                     }
+                      
                   </Form.Group>
                 </div>
               </div>
@@ -550,6 +590,10 @@ export class CommandScreen extends Component {
                     <td> {cmd.countProduit} </td>
                     <td> {cmd.total} $ </td>
                     <td>
+
+                    <Button color="primary" onClick={() => this.handleGetRecu(cmd)}>
+                        <ReceiptIcon />
+                      </Button>
                       <Button color="primary" onClick={() => this.handlePrintPDF(cmd)}>
                         <Print />
                       </Button>
